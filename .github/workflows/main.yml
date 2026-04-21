@@ -3,7 +3,7 @@ name: Line Auto Bot
 on:
   workflow_dispatch:
   schedule:
-    - cron: '20 8 * * *' 
+    - cron: '20 0 * * *' 
 
 env:
   # 解決你遇到的警告：強制使用 Node.js 24
