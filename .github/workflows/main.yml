@@ -3,7 +3,7 @@ name: Line Auto Bot
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 0 * * *' 
+    - cron: '20 8 * * *' 
 
 env:
   # 解決你遇到的警告：強制使用 Node.js 24
@@ -28,4 +28,4 @@ jobs:
         env:
           LINE_ACCESS_TOKEN: ${{ secrets.LINE_ACCESS_TOKEN }}
           LINE_USER_ID: ${{ secrets.LINE_USER_ID }}
-        run: python send_line.py
+        run: python send_message.py
