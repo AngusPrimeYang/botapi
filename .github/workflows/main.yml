@@ -1,0 +1,30 @@
+name: Line Auto Bot
+
+on:
+  # 允許手動執行測試
+  workflow_dispatch:
+  # 定期排程（例如每天早上 8 點，注意這是 UTC 時間，需 -8 小時）
+  schedule:
+    - cron: '20 8 * * *' 
+
+jobs:
+  send_msg:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 檢出程式碼
+        uses: actions/checkout@v4
+
+      - name: 設定 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 安裝套件
+        run: pip install requests
+
+      - name: 執行發送腳本
+        env:
+          # 將 Secret 映射到環境變數
+          LINE_ACCESS_TOKEN: ${{ secrets.LINE_ACCESS_TOKEN }}
+          LINE_USER_ID: ${{ secrets.LINE_USER_ID }}
+        run: python send_line.py
