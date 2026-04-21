@@ -1,10 +1,8 @@
-import google.generativeai as genai
+from google import genai
 import datetime
 import os
 
-# 設定你的 API KEY
-genai.configure(api_key=os.getenv('GEMINI_API_KEY'))
-model = genai.GenerativeModel('gemini-1.5-flash')
+client = genai.Client(api_key=os.getenv('GEMINI_API_KEY'))
 
 def get_interview_sentence():
     prompt = """
@@ -15,8 +13,10 @@ def get_interview_sentence():
     3. 【面試情境】：說明這句話適合在面試的什麼階段（如：專案介紹、處理衝突、談薪資）以及為何這樣說比較專業。
     4. 請使用繁體中文說明。
     """
-    
-    response = model.generate_content(prompt)
+    response = client.models.generate_content(
+        model="gemini-1.5-flash",
+        contents=prompt
+    )
     return response.text
 
 def format_for_line(content):
