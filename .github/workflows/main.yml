@@ -1,11 +1,13 @@
 name: Line Auto Bot
 
 on:
-  # 允許手動執行測試
   workflow_dispatch:
-  # 定期排程（例如每天早上 8 點，注意這是 UTC 時間，需 -8 小時）
   schedule:
-    - cron: '20 8 * * *' 
+    - cron: '0 0 * * *' 
+
+env:
+  # 解決你遇到的警告：強制使用 Node.js 24
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   send_msg:
@@ -17,14 +19,13 @@ jobs:
       - name: 設定 Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.10'
 
       - name: 安裝套件
         run: pip install requests
 
       - name: 執行發送腳本
         env:
-          # 將 Secret 映射到環境變數
           LINE_ACCESS_TOKEN: ${{ secrets.LINE_ACCESS_TOKEN }}
           LINE_USER_ID: ${{ secrets.LINE_USER_ID }}
         run: python send_line.py
