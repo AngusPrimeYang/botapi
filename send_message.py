@@ -18,10 +18,18 @@ def send_message():
     }
 
     # 從 daily_english.py 模組引入 format_for_line 函式
-    from daily_english import format_for_line
-    from daily_english import get_interview_sentence
-    content = get_interview_sentence()
-    message = format_for_line(content)
+    # from daily_english import get_interview_sentence, format_for_line
+    # content = get_interview_sentence()
+    # message = format_for_line(content)
+
+    from daily_english import load_state, check_yesterday_answer, get_new_lesson
+    # 1. 載入舊狀態並回饋
+    old_state = load_state()
+    yesterday_feedback = check_yesterday_answer(old_state)
+    # 2. 生成新內容
+    new_content, correct_option = get_new_lesson()
+    # 2. 生成訊息
+    message = '\n'.join(yesterday_feedback, "--- 📖 今天的學習內容 ---", new_content, "👉 請寫下你的答案 (A/B/C/D)，明天我會為你對獎！")
 
     data = {
         'to': user_id,
