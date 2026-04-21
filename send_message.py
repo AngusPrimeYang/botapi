@@ -22,14 +22,14 @@ def send_message():
     # content = get_interview_sentence()
     # message = format_for_line(content)
 
-    from daily_english import load_state, check_yesterday_answer, get_new_lesson
+    from daily_english import load_state, check_yesterday_answer, get_new_lesson, format_for_line
     # 1. 載入舊狀態並回饋
     old_state = load_state()
     yesterday_feedback = check_yesterday_answer(old_state)
     # 2. 生成新內容
     new_content, correct_option = get_new_lesson()
     # 2. 生成訊息
-    message = '\n'.join([yesterday_feedback, "--- 📖 今天的學習內容 ---", new_content, "👉 請寫下你的答案 (A/B/C/D)，明天我會為你對獎！"])
+    message = '\n'.join([yesterday_feedback, "--- 📖 今天的學習內容 ---", format_for_line(new_content), "👉 請寫下你的答案 (A/B/C/D)，明天我會為你對獎！"])
 
     data = {
         'to': user_id,
