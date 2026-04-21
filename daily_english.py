@@ -14,7 +14,7 @@ def get_interview_sentence():
     4. 請使用繁體中文說明。
     """
     response = client.models.generate_content(
-        model="gemini-1.5-flash",
+        model="gemini-2.5-flash",
         contents=prompt
     )
     return response.text
