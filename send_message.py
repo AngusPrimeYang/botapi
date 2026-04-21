@@ -16,12 +16,19 @@ def send_message():
         'Content-Type': 'application/json',
         'Authorization': f'Bearer {token}'
     }
+
+    # 從 daily_english.py 模組引入 format_for_line 函式
+    from daily_english import format_for_line
+    from daily_english import get_interview_sentence
+    content = get_interview_sentence()
+    message = format_for_line(content)
+
     data = {
         'to': user_id,
         'messages': [
             {
                 'type': 'text',
-                'text': 'Daily motion from GitHub Actions！'
+                'text': message # 'Daily motion from GitHub Actions！'
             }
         ]
     }
