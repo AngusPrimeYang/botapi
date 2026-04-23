@@ -1,11 +1,15 @@
 from google import genai
-from google.api_core.exceptions import ServiceUnavailable
 import os
 import time
 
 MODEL = "gemini-2.5-flash"
 DEFAULT_RETRIES = 3
 _client = genai.Client(api_key=os.getenv('GEMINI_API_KEY'))
+
+
+def _is_503(e: Exception) -> bool:
+    """判斷例外是否為 503 Service Unavailable。"""
+    return "503" in str(e)
 
 
 def generate(prompt: str, retries: int = DEFAULT_RETRIES) -> str:
@@ -17,8 +21,8 @@ def generate(prompt: str, retries: int = DEFAULT_RETRIES) -> str:
                 contents=prompt
             )
             return response.text
-        except ServiceUnavailable as e:
-            if attempt < retries:
+        except Exception as e:
+            if _is_503(e) and attempt < retries:
                 wait = 2 ** attempt
                 print(f"[Retry {attempt}/{retries}] 503 Service Unavailable，{wait}s 後重試...")
                 time.sleep(wait)
