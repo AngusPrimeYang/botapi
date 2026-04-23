@@ -1,10 +1,8 @@
-from google import genai
 import datetime
 import os
 import json
 
-model = "gemini-2.5-flash"
-client = genai.Client(api_key=os.getenv('GEMINI_API_KEY'))
+from prompt_client import generate
 
 STATE_FILE = "learning_state.json"
 USER_ANSWER_FILE = "my_answer.txt" # 使用者在此檔案輸入 A, B, C 或 D
@@ -18,11 +16,7 @@ def get_interview_sentence():
     3. 【面試情境】：說明這句話適合在面試的什麼階段（如：專案介紹、處理衝突、談薪資）以及為何這樣說比較專業。
     4. 請使用繁體中文說明。
     """
-    response = client.models.generate_content(
-        model=model,
-        contents=prompt
-    )
-    return response.text
+    return generate(prompt)
 
 def get_new_lesson():
     prompt = """
@@ -34,11 +28,7 @@ def get_new_lesson():
     4. 【系統標記】：請在最後一行輸出 'ANSWER: [正確選項字母]'（例如 ANSWER: A）。
     請用繁體中文。
     """
-    response = client.models.generate_content(
-        model=model,
-        contents=prompt
-    )
-    result = response.text
+    result = generate(prompt)
     
     # 解析答案
     lines = result.strip().split('\n')
