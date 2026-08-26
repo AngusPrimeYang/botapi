@@ -15,7 +15,7 @@
 | 元件 | 說明 |
 |------|------|
 | `daily_english.py` | 核心邏輯：組合 prompt、解析 AI 回應、格式化 LINE 訊息 |
-| `prompt_client.py` | Gemini API 封裝，使用 `gemini-2.5-flash` 模型，含 503 自動重試 |
+| `prompt_client.py` | Gemini API 封裝，使用 `gemini-3.7-flash` 模型，含 503 自動重試 |
 | `send_message.py` | LINE Messaging API 推播，串接內容生成與訊息發送 |
 | `.github/workflows/main.yml` | GitHub Actions 排程，每日自動觸發 |
 

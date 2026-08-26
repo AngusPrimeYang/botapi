@@ -2,7 +2,7 @@ from google import genai
 import os
 import time
 
-MODEL = "gemini-2.5-flash"
+MODEL = "gemini-3.7-flash"
 DEFAULT_RETRIES = 3
 _client = genai.Client(api_key=os.getenv('GEMINI_API_KEY'))
 
