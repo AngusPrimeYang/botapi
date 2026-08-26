@@ -1,34 +1,58 @@
 import datetime
 import os
 import json
+import re
 
 from prompt_client import generate
+from word_bank import DailyTarget, pick_daily_target
 
 STATE_FILE = "learning_state.json"
 USER_ANSWER_FILE = "my_answer.txt" # 使用者在此檔案輸入 A, B, C 或 D
 
-def get_interview_sentence():
-    prompt = """
-    請為我生成一條適合「外商公司軟體工程師/架構師面試」使用的英文句子。
-    輸出格式要求：
-    1. 【每日金句】：英文句子 (含中文翻譯)
-    2. 【關鍵單字】：2-3 個核心單字，含音標、詞性、解釋與例句。
-    3. 【面試情境】：說明這句話適合在面試的什麼階段（如：專案介紹、處理衝突、談薪資）以及為何這樣說比較專業。
-    4. 請使用繁體中文說明。
-    """
+
+def _contains_target_words(text: str, target: DailyTarget) -> bool:
+    lowered = text.lower()
+    for pick in target.picks:
+        word_hit = re.search(rf"\b{re.escape(pick.word.lower())}\b", lowered)
+        collo_hit = pick.collocation.lower() in lowered
+        if not (word_hit or collo_hit):
+            return False
+    return True
+
+
+def _generate_for_target(prompt: str, target: DailyTarget) -> str:
+    result = generate(prompt)
+    if _contains_target_words(result, target):
+        return result
     return generate(prompt)
 
+
+def get_interview_sentence():
+    target = pick_daily_target()
+    prompt = f"""
+    請為我生成一條適合「外商公司軟體工程師/架構師面試」使用的英文句子。
+    {target.prompt_block()}
+    輸出格式要求：
+    1. 【每日金句】：英文句子 (含中文翻譯)
+    2. 【關鍵單字】：上述指定單字，含音標、詞性、指定搭配的解釋與例句。
+    3. 【面試情境】：對應今天指定的面試階段，說明為何這樣說比較專業。
+    4. 請使用繁體中文說明。
+    """
+    return _generate_for_target(prompt, target)
+
 def get_new_lesson():
-    prompt = """
+    target = pick_daily_target()
+    prompt = f"""
     請生成一則外商面試英文教學。
+    {target.prompt_block()}
     包含：
     1. 【每日金句】與翻譯。
-    2. 【關鍵單字】與情境說明。
-    3. 【選擇練習題】：針對該金句或單字設計一個英文問答情境選擇題（A, B, C, D）。
+    2. 【關鍵單字】：上述指定單字與指定搭配的解釋。
+    3. 【選擇練習題】：針對該金句或指定搭配設計一個英文問答情境選擇題（A, B, C, D）。
     4. 【系統標記】：請在最後一行輸出 'ANSWER: [正確選項字母]'（例如 ANSWER: A）。
     請用繁體中文。
     """
-    result = generate(prompt)
+    result = _generate_for_target(prompt, target)
     
     # 解析答案
     lines = result.strip().split('\n')
